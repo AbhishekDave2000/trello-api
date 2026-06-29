@@ -1,5 +1,5 @@
 class AuthenticationController < ApplicationController
-  skip_before_action :authenticate_request, only: [:login, :register]
+  skip_before_action :authenticate_request, only: [ :login, :register ]
 
   # Registration Method
   def register
