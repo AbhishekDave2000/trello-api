@@ -25,6 +25,14 @@ class UsersController < ApplicationController
     end
   end
 
+  def destroy
+    if @user.destroy 
+      render json: { message: "Successfully Deleted." }, status: :no_content
+    else
+      render json: { message: "Unable to delete the user", data: UserSerializer.new(@user).as_json  }, status: :unprocessable_entity
+    end
+  end
+
   private
   def set_user
     @user = User.find_by(params[:id])

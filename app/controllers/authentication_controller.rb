@@ -3,8 +3,8 @@ class AuthenticationController < ApplicationController
 
   # Registration Method
   def register
-    user = User.create(user_params)
-    JsonWebToken.encode(user_id: user.id)
+    user = User.create!(user_params)
+    token = JsonWebToken.encode(user_id: user&.id)
     render json: { token: token, user: UserSerializer.new(user).as_json }, status: :created
   end
 
@@ -22,6 +22,6 @@ class AuthenticationController < ApplicationController
 
   private
   def user_params
-    params.permit(:name, :user_name, :email, :passowrd, :role)
+    params.permit(:name, :user_name, :email, :password, :role)
   end
 end
