@@ -1,9 +1,15 @@
 class User < ApplicationRecord
   has_secure_password
+
+  # RELATIONS
+  has_many :workspaces, foriegn_key: :owner_id
+  
+  enum :role, { member: "member", admin: "admin", guest: "guest" }
+  
+  # ACTION CALLBACKS
   before_validation :set_role, on: :create
 
-  enum :role, { member: "member", admin: "admin", guest: "guest" }
-
+  # VALIDATIONS
   validates :name, presence: true
   validates :email,  
             presence: true,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_25_004431) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_01_010232) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -37,4 +37,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_004431) do
     t.index ["role"], name: "index_users_on_role"
     t.index ["user_name"], name: "index_users_on_user_name", unique: true
   end
+
+  create_table "workspaces", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.bigint "owner_id", null: false
+    t.string "slug"
+    t.datetime "updated_at", null: false
+    t.boolean "visibility", default: true, null: false
+    t.index ["owner_id"], name: "index_workspaces_on_owner_id"
+  end
+
+  add_foreign_key "workspaces", "users", column: "owner_id"
 end
