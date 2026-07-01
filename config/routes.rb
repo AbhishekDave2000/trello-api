@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   post "/register" => "authentication#register"
   post "/login" => "authentication#login"
 
+
+  resources :users
   # Defines the root path route ("/")
   # root "posts#index"
 end
