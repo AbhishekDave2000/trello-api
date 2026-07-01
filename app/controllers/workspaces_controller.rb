@@ -1,20 +1,18 @@
 class WorkspacesController < ApplicationController
-  before_action :set_workspace, only: [:show, :update, :destroy]
+  before_action :set_workspace, only: [ :show, :update, :destroy ]
 
   # GET /workspaces
   def index
     workspaces = Workspace.all
-
   end
 
   # GET /workspaces/:id
   def show
-    response = params[:id].present? @workspace : @wrokspaces
+    response = params[:id].present? ? @workspace : @workspaces
     render json: response, serializer: WorkspaceSerializer, status: :ok
   end
 
   def create
-    
   end
 
   private

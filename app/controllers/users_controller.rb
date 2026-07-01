@@ -1,9 +1,9 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [ :show, :update, :destroy ]
 
   # GET /users
   def index
-    users = User.where(role: [:manager, :member])
+    users = User.where(role: [ :manager, :member ])
     render json: users, each_serializer: UserSerializer, status: :ok
   end
 
