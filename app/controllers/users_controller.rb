@@ -1,41 +1,50 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
 
+  # GET /users
   def index
     users = User.where(role: [:manager, :member])
-    render json: { data: users }, status: :success
+    render json: users, each_serializer: UserSerializer, status: :ok
   end
 
   def show
-    render json: { data: @user }, status: :success
+    render json: @user, serializer: UserSerializer, status: :ok
   end
 
   def create
-    user =  User.create(user_params)
-    if user.persist?
-      render json: { data: user, message: "User Successfully Created" }, status: :success
+    user = User.new(user_params)
+    if user.save
+      render json: user, serializer: UserSerializer, status: :created
+    else
+      render json: { error: user.errors.full_messages.join(", ") }, status: :unprocessable_entity
     end
   end
 
   def update
-    if @user.update(params[:user_params])
-      render json: { data: @user, message: "User Updated Successdfully" }, status: :success
+    if @user.update(user_params)
+      render json: @user, serializer: UserSerializer, status: :ok
     else
-      render json: { error: @user.errors.full_messages.join(", "), message: "Can not update the user" }, status: :error
+      render json: { error: @user.errors.full_messages.join(", ") }, status: :unprocessable_entity
     end
   end
 
   def destroy
-    if @user.destroy 
-      render json: { message: "Successfully Deleted." }, status: :no_content
+    if @user.destroy
+      render json: { message: "Successfully deleted." }, status: :no_content
     else
-      render json: { message: "Unable to delete the user", data: UserSerializer.new(@user).as_json  }, status: :unprocessable_entity
+      render json: { message: "Unable to delete user" }, status: :unprocessable_entity
     end
   end
 
   private
   def set_user
-    @user = User.find_by(params[:id])
-    unless @user return render json: { error: true, message: "Can not find the user" }
+    @user = User.find_by(id: params[:id])
+    unless @user
+      render json: { error: true, message: "User not found" } and return
+    end
+  end
+
+  def user_params
+    params.require(:user).permit(:name, :email, :password, :role)
   end
 end
