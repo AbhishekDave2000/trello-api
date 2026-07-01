@@ -10,6 +10,7 @@ Rails.application.routes.draw do
 
 
   resources :users
+  resources :workspaces
   # Defines the root path route ("/")
   # root "posts#index"
 end
