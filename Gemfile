@@ -51,3 +51,5 @@ group :development, :test do
 end
 
 gem "active_model_serializers", "~> 0.10.16"
+
+gem "pry-rails", "~> 0.3.11"
