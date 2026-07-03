@@ -1,6 +1,10 @@
 class ApplicationController < ActionController::API
   before_action :authenticate_request
 
+  rescue_from ActiveRecord::RecordNotFound do |e|
+    render json: { error: true, message: "Record not found" }, status: :not_found
+  end
+
   private
   def authenticate_request
     token = request.headers["Authorization"]&.split(" ")&.last

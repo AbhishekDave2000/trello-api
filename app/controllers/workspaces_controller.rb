@@ -4,6 +4,7 @@ class WorkspacesController < ApplicationController
   # GET /workspaces
   def index
     workspaces = Workspace.all
+    render json: workspaces, serializer: WorkspaceSerializer, status: :ok
   end
 
   # GET /workspaces/:id
@@ -12,7 +13,32 @@ class WorkspacesController < ApplicationController
     render json: response, serializer: WorkspaceSerializer, status: :ok
   end
 
+  # POST /workspaces
   def create
+    workspace = Workspace.new(workspace_params)
+    if workspace.save!
+      render json: workspace, serializer: WorkspaceSerializer, status: :created
+    else
+      render json: { message: "Unable to create the workspace", errros: workspace.errors.full_messages.join(", ") }, status: :unprocessable_entity
+    end
+  end
+
+  # PUT /workspaces
+  def update
+    if @workspace.update(workspace_params)
+      render json: @workspace, serializer: WorkspaceSerializer, status: :ok
+    else
+      render json: { message: "Unable to update the workspace", errors: @workspace.errors.full_messages.join(", ") }, status: :unprocessable_entity
+    end
+  end
+
+  # DELETE /workspaces/:id
+  def destroy
+    if @workspace.destroy!
+      render json: { message: "Successfully deleted the workspace" }, status: :ok
+    else
+      render json: { message: "Unable to delete the workspace" }, status: :unprocessable_entity
+    end
   end
 
   private
