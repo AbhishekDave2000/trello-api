@@ -16,7 +16,7 @@ class UsersController < ApplicationController
     if user.save
       render json: user, serializer: UserSerializer, status: :created
     else
-      render json: { error: user.errors.full_messages.join(", ") }, status: :unprocessable_entity
+      render json: {  message: "Unable to create the user", error: user.errors.full_messages.join(", ") }, status: :unprocessable_entity
     end
   end
 
@@ -24,12 +24,12 @@ class UsersController < ApplicationController
     if @user.update(user_params)
       render json: @user, serializer: UserSerializer, status: :ok
     else
-      render json: { error: @user.errors.full_messages.join(", ") }, status: :unprocessable_entity
+      render json: { message: "Unable to update the user", error: @user.errors.full_messages.join(", ") }, status: :unprocessable_entity
     end
   end
 
   def destroy
-    if @user.destroy
+    if @user.destroy!
       render json: { message: "Successfully deleted." }, status: :no_content
     else
       render json: { message: "Unable to delete user" }, status: :unprocessable_entity
@@ -38,13 +38,13 @@ class UsersController < ApplicationController
 
   private
   def set_user
-    @user = User.find_by(id: params[:id])
+    @user = User.find(params[:id])
     unless @user
       render json: { error: true, message: "User not found" } and return
     end
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :password, :role)
+    params.require(:user).permit(:name, :email, :user_name,  :password, :role)
   end
 end
