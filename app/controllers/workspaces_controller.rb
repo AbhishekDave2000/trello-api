@@ -1,16 +1,16 @@
 class WorkspacesController < ApplicationController
-  before_action :set_workspace, only: [ :show, :update, :destroy ]
+  before_action :set_workspace, only: [:update, :destroy ]
 
   # GET /workspaces
   def index
     workspaces = Workspace.all
-    render json: workspaces, serializer: WorkspaceSerializer, status: :ok
+    render json: workspaces, each_serializer: WorkspaceSerializer, status: :ok
   end
 
   # GET /workspaces/:id
   def show
-    response = params[:id].present? ? @workspace : @workspaces
-    render json: response, serializer: WorkspaceSerializer, status: :ok
+    response = params[:id].present? ? Workspace.find(params[:id]) : Workspace.wher(owner_id: params[:owner_id])
+    render json: response, each_serializer: WorkspaceSerializer, status: :ok
   end
 
   # POST /workspaces
@@ -47,7 +47,7 @@ class WorkspacesController < ApplicationController
   end
 
   def set_workspace
-    @workspace = Workspace.find_by(id: params[:id])
+    @workspace = Workspace.find(params[:id])
   end
 
   def set_workspace
