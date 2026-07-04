@@ -1,5 +1,5 @@
 class WorkspacesController < ApplicationController
-  before_action :set_workspace, only: [:update, :destroy ]
+  before_action :set_workspace, only: [ :update, :destroy ]
 
   # GET /workspaces
   def index
