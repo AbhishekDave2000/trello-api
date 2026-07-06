@@ -3,6 +3,7 @@ class Workspace < ApplicationRecord
   belongs_to :owner, class_name: "User"
 
   # VALIDATIONS
-  validates :name, presence: true
+  validates :name, presence: { message: "is required" }, 
+                  uniqueness: { message: "is already taken" }
   validates :visibility, presence: true
 end
