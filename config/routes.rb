@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   resources :users
   resources :workspaces
-  get "/workspaces/:owner_id" => "workspaces#show"
+  get "/workspaces/owner/:owner_id", to: "workspaces#by_owner"
   # Defines the root path route ("/")
   # root "posts#index"
 end
