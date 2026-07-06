@@ -24,7 +24,7 @@ class WorkspacesController < ApplicationController
     if workspace.save
       render json: workspace, serializer: WorkspaceSerializer, status: :created
     else
-      render json: { message: "Workspace not created. ", errros: workspace.errors.full_messages.join(", ") }, status: :unprocessable_entity
+      render json: { message: "Workspace not created.", errros: workspace.errors.full_messages.join(", ") }, status: :unprocessable_entity
     end
   end
 
@@ -39,7 +39,7 @@ class WorkspacesController < ApplicationController
 
   # DELETE /workspaces/:id
   def destroy
-    if @workspace.destroy!
+    if @workspace.destroy
       render json: { message: "Successfully deleted the workspace" }, status: :ok
     else
       render json: { message: "Workspace not deleted." }, status: :unprocessable_entity
