@@ -1,5 +1,5 @@
 class WorkspacesController < ApplicationController
-  before_action :set_workspace, only: [ :update, :destroy ]
+  before_action :set_workspace, only: [ :show, :update, :destroy ]
 
   # GET /workspaces
   def index
@@ -9,17 +9,22 @@ class WorkspacesController < ApplicationController
 
   # GET /workspaces/:id
   def show
-    response = params[:id].present? ? Workspace.find(params[:id]) : Workspace.wher(owner_id: params[:owner_id])
-    render json: response, each_serializer: WorkspaceSerializer, status: :ok
+    render json: @workspace, serializer: WorkspaceSerializer, status: :ok
+  end
+
+  # GET /workspaces/owner/:owner_id
+  def by_owner
+    workspaces = Workspace.where(owner_id: params[:owner_id])
+    render json: workspaces, each_serializer: WorkspaceSerializer, status: :ok
   end
 
   # POST /workspaces
   def create
     workspace = Workspace.new(workspace_params)
-    if workspace.save!
+    if workspace.save
       render json: workspace, serializer: WorkspaceSerializer, status: :created
     else
-      render json: { message: "Unable to create the workspace", errros: workspace.errors.full_messages.join(", ") }, status: :unprocessable_entity
+      render json: { message: "Workspace not created. ", errros: workspace.errors.full_messages.join(", ") }, status: :unprocessable_entity
     end
   end
 
@@ -28,7 +33,7 @@ class WorkspacesController < ApplicationController
     if @workspace.update(workspace_params)
       render json: @workspace, serializer: WorkspaceSerializer, status: :ok
     else
-      render json: { message: "Unable to update the workspace", errors: @workspace.errors.full_messages.join(", ") }, status: :unprocessable_entity
+      render json: { message: "Workspace not updated.", errors: @workspace.errors.full_messages.join(", ") }, status: :unprocessable_entity
     end
   end
 
@@ -37,7 +42,7 @@ class WorkspacesController < ApplicationController
     if @workspace.destroy!
       render json: { message: "Successfully deleted the workspace" }, status: :ok
     else
-      render json: { message: "Unable to delete the workspace" }, status: :unprocessable_entity
+      render json: { message: "Workspace not deleted." }, status: :unprocessable_entity
     end
   end
 
@@ -48,9 +53,5 @@ class WorkspacesController < ApplicationController
 
   def set_workspace
     @workspace = Workspace.find(params[:id])
-  end
-
-  def set_workspace
-    @workspaces = Workspace.where(owner_id: params[:owner_id])
   end
 end
