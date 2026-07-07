@@ -3,6 +3,7 @@ class User < ApplicationRecord
 
   # RELATIONS
   has_many :workspaces, foreign_key: :owner_id
+  has_many :workspace_members, foreign_key: :user_id
 
   enum :role, { member: "member", admin: "admin", manager: "manager" }
 
