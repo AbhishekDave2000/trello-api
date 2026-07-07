@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [ :show, :update, :destroy, :assign_workspace ]
+  before_action :validate_user_before_workspace_association, only: [ :assign_workspace ]
 
   # GET /users
   def index
@@ -50,6 +51,12 @@ class UsersController < ApplicationController
     params.permit(:workspace_id, :role)
   end
 
+  def validate_user_before_workspace_association
+    unless @current_user.is_admin? || @current_user.is_manager? || @current_user.workspaces.ides.include?(params[:workspace_id])
+      return render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request
+    end
+  end
+
   def set_user
     @user = User.find(params[:id])
     unless @user
@@ -58,6 +65,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :user_name,  :password, :role)
+    params.require(:user).permit(:name, :email, :user_name, :password, :role)
   end
 end
