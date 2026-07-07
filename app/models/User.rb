@@ -5,7 +5,7 @@ class User < ApplicationRecord
   has_many :workspaces, foreign_key: :owner_id
   has_many :workspace_members, foreign_key: :user_id
 
-  enum :role, { member: "member", admin: "admin", manager: "manager" }
+  enum :role, { member: "member", admin: "admin", manager: "manage r" }
 
   # ACTION CALLBACKS
   before_validation :set_role, on: :create
@@ -21,5 +21,13 @@ class User < ApplicationRecord
   private
   def set_role
     self.role ||= :member
+  end
+
+  def is_admin?
+    self.admin?
+  end
+
+  def is_manager?
+    self.manager?
   end
 end
