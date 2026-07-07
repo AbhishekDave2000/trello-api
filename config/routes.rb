@@ -9,9 +9,13 @@ Rails.application.routes.draw do
   post "/login" => "authentication#login"
 
 
+  # User methods
   resources :users
+  post "/users/:id/assign_workspace", to: "users#assign_workspace"
+
+  # Workspace Methods
   resources :workspaces
   get "/workspaces/owner/:owner_id", to: "workspaces#by_owner"
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # post "/workpsaces/assign_to_user", to: "workspace#assign_to_user"
+
 end
