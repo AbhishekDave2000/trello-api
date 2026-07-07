@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [ :show, :update, :destroy ]
+  before_action :set_user, only: [ :show, :update, :destroy, :assign_workspace ]
 
   # GET /users
   def index
@@ -36,7 +36,20 @@ class UsersController < ApplicationController
     end
   end
 
+  def assign_workspace
+    member_record = @user.workspace_members.create(assignment_params)
+    if member_record
+      render json: member_record, serializer: WorkspaceMemberSerializer, status: :created
+    else
+      render json: { status: "error", errors: member_record.errors.full_messages.join(", ") }, status: :unprocessable_entity
+    end
+  end
+
   private
+  def assignment_params
+    params.permit(:workspace_id, :role)
+  end
+
   def set_user
     @user = User.find(params[:id])
     unless @user
