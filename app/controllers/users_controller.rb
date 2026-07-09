@@ -52,7 +52,7 @@ class UsersController < ApplicationController
   end
 
   def validate_user_before_workspace_association
-    unless @current_user.is_admin? || @current_user.is_manager? || @current_user.workspaces.ides.include?(params[:workspace_id])
+    unless @current_user.admin? || @current_user.manager? || @current_user.workspaces.ids.include?(params[:workspace_id]) || @current_user.workspace_members.find_by(workspace_id: params[:workspace_id])&.role&.in?(["admin", "manager"])
       return render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request
     end
   end

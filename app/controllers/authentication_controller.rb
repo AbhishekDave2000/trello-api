@@ -10,7 +10,7 @@ class AuthenticationController < ApplicationController
 
   # Login Method
   def login
-    user = User.find_by!(email: params[:email].downcase)
+    user = User.find_by(email: params[:email].downcase)
 
     if user.authenticate(params[:password])
       token = JsonWebToken.encode(user_id: user.id)

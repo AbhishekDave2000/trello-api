@@ -9,6 +9,7 @@ class User < ApplicationRecord
 
   # ACTION CALLBACKS
   before_validation :set_role, on: :create
+  before_validation :downcase_email 
 
   # VALIDATIONS
   validates :name, presence: true
@@ -23,11 +24,7 @@ class User < ApplicationRecord
     self.role ||= :member
   end
 
-  def is_admin?
-    self.admin?
-  end
-
-  def is_manager?
-    self.manager?
+  def downcase_email
+    self.email = email.to_s.strip.downcase if email.present?
   end
 end
