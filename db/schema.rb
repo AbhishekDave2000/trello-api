@@ -10,13 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_06_021445) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_09_021634) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "user_role", ["member", "admin", "guest"]
+
+  create_table "board_members", force: :cascade do |t|
+    t.bigint "board_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "role", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["board_id"], name: "index_board_members_on_board_id"
+    t.index ["user_id"], name: "index_board_members_on_user_id"
+  end
+
+  create_table "boards", force: :cascade do |t|
+    t.datetime "archived_at"
+    t.string "bg_color"
+    t.string "bg_img"
+    t.datetime "created_at", null: false
+    t.bigint "owner_id", null: false
+    t.string "slug", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.integer "visibility", default: 0, null: false
+    t.bigint "workspace_id", null: false
+    t.index ["owner_id"], name: "index_boards_on_owner_id"
+    t.index ["workspace_id"], name: "index_boards_on_workspace_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.boolean "active", default: true
@@ -60,6 +85,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_06_021445) do
     t.index ["owner_id"], name: "index_workspaces_on_owner_id"
   end
 
+  add_foreign_key "board_members", "boards"
+  add_foreign_key "board_members", "users"
+  add_foreign_key "boards", "users", column: "owner_id"
+  add_foreign_key "boards", "workspaces"
   add_foreign_key "workspace_members", "users"
   add_foreign_key "workspace_members", "workspaces"
   add_foreign_key "workspaces", "users", column: "owner_id"
