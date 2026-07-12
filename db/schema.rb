@@ -40,7 +40,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_09_021634) do
     t.integer "visibility", default: 0, null: false
     t.bigint "workspace_id", null: false
     t.index ["owner_id"], name: "index_boards_on_owner_id"
-    t.index ["workspace_id"], name: "index_boards_on_workspace_id"
+    t.index ["workspace_id"], name: "index _boards_on_workspace_id"
   end
 
   create_table "users", force: :cascade do |t|
