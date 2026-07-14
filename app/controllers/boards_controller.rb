@@ -35,13 +35,14 @@ class BoardsController < ApplicationController
 
   private
   def set_board
-    @board = Board.find[params[:id]]
+    @board = Board.find(params[:id])   
     unless @board.present?
       render json: { status: "error", message: "Can not find the Board with the provided id." }, status: :not_found
     end
+    @board
   end
 
-  def boards_params
+  def board_params
     params.permit(:title, :slug, :visibility, :owner_id, :workspace_id, :bg_color, :bg_img, :archived_at)
   end
 

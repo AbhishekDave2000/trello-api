@@ -16,5 +16,7 @@ Rails.application.routes.draw do
   # Workspace Methods
   resources :workspaces
   get "/workspaces/owner/:owner_id", to: "workspaces#by_owner"
+
+  resources :boards
   # post "/workpsaces/assign_to_user", to: "workspace#assign_to_user"
 end
