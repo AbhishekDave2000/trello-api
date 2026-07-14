@@ -9,7 +9,7 @@ class User < ApplicationRecord
 
   # ACTION CALLBACKS
   before_validation :set_role, on: :create
-  before_validation :downcase_email 
+  before_validation :downcase_email
 
   # VALIDATIONS
   validates :name, presence: true

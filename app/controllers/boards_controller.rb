@@ -1,6 +1,6 @@
 class BoardsController < ApplicationController
-  before_action :check_admin_role, only: [:index]
-  before_action :set_board, only: [:show, :update, :destroy]
+  before_action :check_admin_role, only: [ :index ]
+  before_action :set_board, only: [ :show, :update, :destroy ]
 
   def index
     boards = Board.all
@@ -33,21 +33,21 @@ class BoardsController < ApplicationController
     render json: { message: "Board successfully deleted." }, status: :ok
   end
 
-  private 
+  private
   def set_board
     @board = Board.find[params[:id]]
     unless @board.present?
-      return render json: { status: "error", message: "Can not find the Board with the provided id." }, status: :not_found
+      render json: { status: "error", message: "Can not find the Board with the provided id." }, status: :not_found
     end
   end
-  
+
   def boards_params
     params.permit(:title, :slug, :visibility, :owner_id, :workspace_id, :bg_color, :bg_img, :archived_at)
   end
 
   def check_admin_role
-    unless @current_user.admin? || @current_user.manager? || @current_user.workspaces.ids.include?(params[:workspace_id]) || @current_user.workspace_members.find_by(workspace_id: params[:workspace_id])&.role&.in?(["admin", "manager"])
-      return render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request
+    unless @current_user.admin? || @current_user.manager? || @current_user.workspaces.ids.include?(params[:workspace_id]) || @current_user.workspace_members.find_by(workspace_id: params[:workspace_id])&.role&.in?([ "admin", "manager" ])
+      render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request
     end
   end
 end

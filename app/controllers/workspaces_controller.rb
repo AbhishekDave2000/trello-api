@@ -1,5 +1,5 @@
 class WorkspacesController < ApplicationController
-  before_action :check_admin_role, only: [:index]
+  before_action :check_admin_role, only: [ :index ]
   before_action :set_workspace, only: [ :show, :update, :destroy ]
 
   # GET /workspaces
@@ -49,11 +49,11 @@ class WorkspacesController < ApplicationController
 
   private
   def check_admin_role
-    unless @current_user.admin? || @current_user.manager? || @current_user.workspaces.ids.include?(params[:workspace_id]) || @current_user.workspace_members.find_by(workspace_id: params[:workspace_id])&.role&.in?(["admin", "manager"])
-      return render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request
+    unless @current_user.admin? || @current_user.manager? || @current_user.workspaces.ids.include?(params[:workspace_id]) || @current_user.workspace_members.find_by(workspace_id: params[:workspace_id])&.role&.in?([ "admin", "manager" ])
+      render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request
     end
   end
-  
+
   def workspace_params
     params.permit(:name, :slug, :description, :visibility, :owner_id)
   end
