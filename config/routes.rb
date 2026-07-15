@@ -8,10 +8,12 @@ Rails.application.routes.draw do
   post "/register" => "authentication#register"
   post "/login" => "authentication#login"
 
-
   # User methods
   resources :users
+
+    # Assign Workspace and Board to the user
   post "/users/:id/assign_workspace", to: "users#assign_workspace"
+  post "/users/:id/assign_board", to: "users#assign_board"
 
   # Workspace Methods
   resources :workspaces
