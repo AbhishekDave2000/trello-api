@@ -2,9 +2,12 @@ class User < ApplicationRecord
   has_secure_password
 
   # RELATIONS
-  has_many :workspaces, foreign_key: :owner_id
-  has_many :workspace_members, foreign_key: :user_id
+  has_many :workspaces,         foreign_key: :owner_id
+  has_many :boards,             foreign_key: :owner_id
+  has_many :workspace_members,  foreign_key: :user_id
+  has_many :board_members,      foreign_key: :user_id
 
+  # ENUMs
   enum :role, { member: "member", admin: "admin", manager: "manage r" }
 
   # ACTION CALLBACKS
