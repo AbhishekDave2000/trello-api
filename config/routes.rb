@@ -9,16 +9,25 @@ Rails.application.routes.draw do
   post "/login" => "authentication#login"
 
   # User methods
-  resources :users
-
-    # Assign Workspace and Board to the user
-  post "/users/:id/assign_workspace", to: "users#assign_workspace"
-  post "/users/:id/assign_board", to: "users#assign_board"
+  resources :users do
+    member do
+      post "assign_workspace", to: "users#assign_workspace"
+      post "assign_board", to: "users#assign_board"
+    end
+  end
 
   # Workspace Methods
-  resources :workspaces
+  resources :workspaces do
+    member do
+      get :workspace_members
+    end
+  end
   get "/workspaces/owner/:owner_id", to: "workspaces#by_owner"
 
-  resources :boards
+  resources :boards do
+    member do
+      get :board_members
+    end
+  end
   # post "/workpsaces/assign_to_user", to: "workspace#assign_to_user"
 end
