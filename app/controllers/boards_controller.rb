@@ -1,6 +1,6 @@
 class BoardsController < ApplicationController
   before_action :check_admin_role, only: [ :index ]
-  before_action :set_board, only: [ :show, :update, :destroy ]
+  before_action :set_board, only: [ :show, :update, :destroy, :board_members ]
 
   def index
     boards = Board.all
@@ -33,6 +33,11 @@ class BoardsController < ApplicationController
     render json: { message: "Board successfully deleted." }, status: :ok
   end
 
+  def board_members
+    board_members = @board.board_members
+    render json: board_members, each_serializer: BoardMemberSerializer, status: :ok
+  end
+
   private
   def set_board
     @board = Board.find(params[:id])   
@@ -48,7 +53,7 @@ class BoardsController < ApplicationController
 
   def check_admin_role
     unless @current_user.admin? || @current_user.manager? || @current_user.workspaces.ids.include?(params[:workspace_id]) || @current_user.workspace_members.find_by(workspace_id: params[:workspace_id])&.role&.in?([ "admin", "manager" ])
-      render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request
+      return render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request
     end
   end
 end

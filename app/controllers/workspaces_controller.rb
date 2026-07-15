@@ -1,6 +1,7 @@
 class WorkspacesController < ApplicationController
   before_action :check_admin_role, only: [ :index ]
-  before_action :set_workspace, only: [ :show, :update, :destroy ]
+  before_action :set_workspace, only: [ :show, :update, :destroy, :workspace_members ]
+  # before_action :validate_user_role, only: [:workspace_members]
 
   # GET /workspaces
   def index
@@ -47,10 +48,15 @@ class WorkspacesController < ApplicationController
     end
   end
 
+  def workspace_members
+    workspace_members = @workspace.workspace_members
+    render json: workspace_members, each_serializer: WorkspaceMemberSerializer, status: :ok
+  end
+
   private
   def check_admin_role
     unless @current_user.admin? || @current_user.manager? || @current_user.workspaces.ids.include?(params[:workspace_id]) || @current_user.workspace_members.find_by(workspace_id: params[:workspace_id])&.role&.in?([ "admin", "manager" ])
-      render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request
+      return render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request
     end
   end
 
