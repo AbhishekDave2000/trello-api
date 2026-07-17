@@ -40,7 +40,7 @@ class BoardsController < ApplicationController
 
   private
   def set_board
-    @board = Board.find(params[:id])   
+    @board = Board.find(params[:id])
     unless @board.present?
       render json: { status: "error", message: "Can not find the Board with the provided id." }, status: :not_found
     end
@@ -54,15 +54,15 @@ class BoardsController < ApplicationController
   def check_admin_role
     board_id = params[:board_id] || params[:id]
     unless board_owner?(board_id) || board_manager?(board_id)
-      return render json: { error: true, message: "You don't have the access to the board. If you think this is wrong please contact your admin or the manager." }, status: :bad_request
+      render json: { error: true, message: "You don't have the access to the board. If you think this is wrong please contact your admin or the manager." }, status: :bad_request
     end
   end
 
   def board_owner?(board_id)
-    return true if @current_user.admin? || @current_user.boards.exists?(board_id)
+    true if @current_user.admin? || @current_user.boards.exists?(board_id)
   end
 
   def board_manager?(board_id)
-    return true if @current_user.manager? || @current_user.board_members.find_by(board_id: board_id)&.role&.in?([ "admin", "manager" ])
+    true if @current_user.manager? || @current_user.board_members.find_by(board_id: board_id)&.role&.in?([ "admin", "manager" ])
   end
 end

@@ -56,16 +56,16 @@ class WorkspacesController < ApplicationController
   def check_admin_role
     workspace_id = params[:workspace_id] || params[:id]
     unless workspace_owner?(workspace_id) || workspace_manager?(workspace_id)
-      return render json: { error: true, message: "You don't have the access to assign the workspace. If you think this is wrong please contact your admin or the manager." }, status: :bad_request
+      render json: { error: true, message: "You don't have the access to assign the workspace. If you think this is wrong please contact your admin or the manager." }, status: :bad_request
     end
   end
 
   def workspace_owner?(workspace_id)
-    return true if @current_user.admin? || @current_user.workspaces.exists?(workspace_id)
+    true if @current_user.admin? || @current_user.workspaces.exists?(workspace_id)
   end
 
   def workspace_manager?(workspace_id)
-    return true if @current_user.manager? || @current_user.workspace_members.find_by(workspace_id: workspace_id)&.role&.in?([ "admin", "manager" ])
+    true if @current_user.manager? || @current_user.workspace_members.find_by(workspace_id: workspace_id)&.role&.in?([ "admin", "manager" ])
   end
 
   def workspace_params

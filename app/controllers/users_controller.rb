@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [ :show, :update, :destroy, :assign_workspace, :assign_board ]
   before_action :validate_user_before_workspace_association, only: [ :assign_workspace ]
-  before_action :validate_user_before_board_association, only: [ :assign_board ] 
+  before_action :validate_user_before_board_association, only: [ :assign_board ]
 
   # GET /users
   def index
@@ -72,8 +72,8 @@ class UsersController < ApplicationController
   end
 
   def validate_user_before_board_association
-    unless @current_user.admin? || @current_user.manager? || @current_user.boards.ids.include?(params[:board_id]) || @current_user.board_members.find_by(board_id: params[:board_id])&.role&.in?(["admin", "manager"])
-      render json: { error: true, message: "You don't have the appropriate access, Contact admin or your mnanager if you have query."}, status: :bad_request
+    unless @current_user.admin? || @current_user.manager? || @current_user.boards.ids.include?(params[:board_id]) || @current_user.board_members.find_by(board_id: params[:board_id])&.role&.in?([ "admin", "manager" ])
+      render json: { error: true, message: "You don't have the appropriate access, Contact admin or your mnanager if you have query." }, status: :bad_request
     end
   end
 
