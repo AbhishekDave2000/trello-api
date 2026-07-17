@@ -1,7 +1,6 @@
 class WorkspacesController < ApplicationController
-  before_action :check_admin_role, only: [ :index ]
+  before_action :check_admin_role, only: [ :index, :workspace_members ]
   before_action :set_workspace, only: [ :show, :update, :destroy, :workspace_members ]
-  before_action :validate_user_role, only: [:workspace_members]
 
   # GET /workspaces
   def index
@@ -55,23 +54,18 @@ class WorkspacesController < ApplicationController
 
   private
   def check_admin_role
-    unless @current_user.admin? || @current_user.manager? || workspace_owner?(params[:workspace_id]) || workspace_manager?(params[:workspace_id])
-      return render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request
-    end
-  end
-  
-  def validate_user_role
-    unless @current_user.admin? || @current_user.manager? || workspace_owner?(params[:id]) || workspace_manager?(params[:id]) 
-      return render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request 
+    workspace_id = params[:workspace_id] || params[:id]
+    unless workspace_owner?(workspace_id) || workspace_manager?(workspace_id)
+      return render json: { error: true, message: "You don't have the access to assign the workspace. If you think this is wrong please contact your admin or the manager." }, status: :bad_request
     end
   end
 
   def workspace_owner?(workspace_id)
-    return true if @current_user.workspaces.exists?(workspace_id)
+    return true if @current_user.admin? || @current_user.workspaces.exists?(workspace_id)
   end
 
   def workspace_manager?(workspace_id)
-    return true if @current_user.workspace_members.find_by(workspace_id: workspace_id)&.role&.in?([ "admin", "manager" ])
+    return true if @current_user.manager? || @current_user.workspace_members.find_by(workspace_id: workspace_id)&.role&.in?([ "admin", "manager" ])
   end
 
   def workspace_params
