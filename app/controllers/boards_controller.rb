@@ -1,6 +1,6 @@
 class BoardsController < ApplicationController
-  before_action :check_admin_role, only: [ :index ]
   before_action :set_board, only: [ :show, :update, :destroy, :board_members ]
+  before_action :check_admin_role, only: [ :index, :board_members ]
 
   def index
     boards = Board.all
@@ -52,8 +52,17 @@ class BoardsController < ApplicationController
   end
 
   def check_admin_role
-    unless @current_user.admin? || @current_user.manager? || @current_user.workspaces.ids.include?(params[:workspace_id]) || @current_user.workspace_members.find_by(workspace_id: params[:workspace_id])&.role&.in?([ "admin", "manager" ])
-      return render json: { error: true, message: "You don't have the access to assign the workspace." }, status: :bad_request
+    board_id = params[:board_id] || params[:id]
+    unless board_owner?(board_id) || board_manager?(board_id)
+      return render json: { error: true, message: "You don't have the access to the board. If you think this is wrong please contact your admin or the manager." }, status: :bad_request
     end
+  end
+
+  def board_owner?(board_id)
+    return true if @current_user.admin? || @current_user.boards.exists?(board_id)
+  end
+
+  def board_manager?(board_id)
+    return true if @current_user.manager? || @current_user.board_members.find_by(board_id: board_id)&.role&.in?([ "admin", "manager" ])
   end
 end
