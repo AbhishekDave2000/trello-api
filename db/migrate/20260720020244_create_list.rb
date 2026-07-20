@@ -8,5 +8,7 @@ class CreateList < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
+
+    add_index :lists, [:board_id, :position]
   end
 end
