@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_09_021634) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_20_020244) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,7 +40,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_09_021634) do
     t.integer "visibility", default: 0, null: false
     t.bigint "workspace_id", null: false
     t.index ["owner_id"], name: "index_boards_on_owner_id"
-    t.index ["workspace_id"], name: "index _boards_on_workspace_id"
+    t.index ["workspace_id"], name: "index_boards_on_workspace_id"
+  end
+
+  create_table "lists", force: :cascade do |t|
+    t.datetime "archived_at"
+    t.bigint "board_id", null: false
+    t.datetime "created_at", null: false
+    t.float "position", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["board_id"], name: "index_lists_on_board_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -89,6 +99,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_09_021634) do
   add_foreign_key "board_members", "users"
   add_foreign_key "boards", "users", column: "owner_id"
   add_foreign_key "boards", "workspaces"
+  add_foreign_key "lists", "boards"
   add_foreign_key "workspace_members", "users"
   add_foreign_key "workspace_members", "workspaces"
   add_foreign_key "workspaces", "users", column: "owner_id"
